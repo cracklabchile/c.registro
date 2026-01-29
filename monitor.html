@@ -16,152 +16,151 @@
         :root {
             --primary-bg: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.6);
-            --card-hover-bg: rgba(40, 55, 80, 0.8);
+            --card-hover-bg: rgba(40, 55, 80, 0.9);
             --accent-color: #3b82f6;
             --text-main: #f8fafc;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.15);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         body {
             background-color: var(--primary-bg);
             color: var(--text-main);
             font-family: 'Outfit', sans-serif;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
+            /* Prevent scrolling for dashboard feel */
             background-image:
-                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
-            overflow-x: hidden;
-            font-size: 16px;
-            /* Base size for 1080p */
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Glassmorphism Header */
+        /* Compact Header */
         .glass-header {
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(12px);
             border-bottom: var(--glass-border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            flex-shrink: 0;
         }
 
-        /* Glass Cards */
-        .data-card {
+        /* Main Scrollable Area if needed on small screens, fixed on large */
+        #mainContainer {
+            flex-grow: 1;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-grid {
+            height: 100%;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .dashboard-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 0;
+            /* Fix flex overflow */
+        }
+
+        /* Group Card */
+        .group-card {
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
             border: var(--glass-border);
             border-radius: 12px;
-            padding: 1.25rem;
-            /* Increased Padding */
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            height: 100%;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            /* Expand to fill column */
+            overflow: hidden;
+        }
+
+        .group-header {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .group-body {
+            padding: 0.75rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            justify-content: space-evenly;
+            /* Distribute vertical space */
+            overflow-y: auto;
+        }
+
+        /* Subsections */
+        .sub-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+
+        .sub-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Data Items */
+        .data-item {
+            text-align: center;
+            padding: 0.25rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
             cursor: default;
         }
 
-        /* HOVER ANIMATION REQUESTED */
-        .data-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
-            border-color: rgba(59, 130, 246, 0.5);
+        .data-item:hover {
             background: var(--card-hover-bg);
-            z-index: 10;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        .card-label {
-            color: #bdc3c7;
-            /* Whitish grey for labels */
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-            font-weight: 400;
-        }
-
-        .card-value {
-            font-size: 2rem;
-            /* Large readable numbers */
+        .val-text {
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #ffffff;
-            /* PURE WHITE */
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            line-height: 1.2;
+            color: #fff;
+            line-height: 1.1;
         }
 
-        .unit-label {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            font-weight: 400;
-        }
-
-        .section-title {
-            color: var(--accent-color);
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .label-text {
+            font-size: 0.75rem;
+            color: #cbd5e1;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        .sub-section-badge {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #e2e8f0;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
+        .unit-text {
+            font-size: 0.7rem;
+            color: #64748b;
         }
 
-        .status-badge {
-            font-size: 0.85rem;
-            padding: 0.5em 1em;
-            border-radius: 20px;
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* Header Utilities */
+        .filter-white {
+            filter: brightness(0) invert(1);
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #34d399;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #34d399;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.5;
-                transform: scale(1.1);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        #refreshTimer {
-            width: 0%;
-            height: 3px;
-            background: var(--accent-color);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            transition: width 1s linear;
+        .text-gradient {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .spin-anim {
@@ -174,66 +173,94 @@
             }
         }
 
-        .filter-white {
-            filter: brightness(0) invert(1);
+        #refreshTimer {
+            width: 0%;
+            height: 2px;
+            background: var(--accent-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: width 1s linear;
         }
 
-        .text-gradient {
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #34d399;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #34d399;
+            animation: pulse 2s infinite;
         }
 
-        .empty-state {
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: var(--text-secondary);
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            body {
+                height: auto;
+                overflow: auto;
+            }
+
+            .dashboard-grid {
+                flex-direction: column;
+                height: auto;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Progress Bar for Refresh -->
     <div id="refreshTimer"></div>
 
-    <header class="glass-header py-3 mb-4">
+    <header class="glass-header">
         <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-                <img src="Cermaq_logo2.png" alt="Cermaq" height="42" class="d-inline-block align-text-top filter-white">
+                <img src="Cermaq_logo2.png" alt="Cermaq" height="32" class="d-inline-block align-text-top filter-white">
                 <div class="border-start border-secondary ps-3 ms-2">
-                    <h1 class="h4 m-0 fw-bold text-gradient text-uppercase" style="letter-spacing: 3px;">REGISTRO O2 Y
+                    <h1 class="h6 m-0 fw-bold text-gradient text-uppercase" style="letter-spacing: 2px;">REGISTRO O2 Y
                         ENERGÍA</h1>
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-4">
+            <div class="d-flex align-items-center gap-3">
                 <div class="text-end d-none d-md-block">
-                    <div id="lastUpdate" class="text-white-50 small">Última sincro: --:--</div>
+                    <span id="lastUpdate"
+                        class="badge bg-dark border border-secondary text-light fw-normal">--:--</span>
                 </div>
                 <button onclick="fetchData()" id="btnRefresh"
-                    class="btn btn-outline-light rounded-pill px-3 py-1 d-flex align-items-center gap-2 border-opacity-50">
-                    <i class="bi bi-arrow-clockwise"></i> <span class="d-none d-sm-inline">Actualizar</span>
+                    class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px;">
+                    <i class="bi bi-arrow-clockwise"></i>
                 </button>
-                <div class="status-badge" id="statusBadge">
+                <div
+                    class="d-flex align-items-center gap-2 px-2 py-1 border border-success border-opacity-25 bg-success bg-opacity-10 rounded-pill">
                     <div class="status-dot"></div>
-                    <span id="statusText">CONECTADO</span>
+                    <span id="statusText" class="small text-success fw-bold" style="font-size: 0.7rem;">ONLINE</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="container-fluid px-4 pb-5" id="mainContainer">
-        <!-- Content injected via JS -->
-        <div class="empty-state">
-            <div class="spinner-border text-primary mb-3" role="status"></div>
-            <p>Conectando con Servidor Central...</p>
+    <div class="container-fluid px-4" id="mainContainer">
+        <!-- Dashboard Grid injected here -->
+        <div class="d-flex justify-content-center align-items-center h-100">
+            <div class="spinner-border text-primary opacity-50" role="status"></div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzCglGjiB2Dqwl6UAGpNWaR-OI29BfX72wn6avZESrdeqJc_N-qQyPxML0AqxD0Fv5l/exec";
         const REFRESH_INTERVAL = 30000;
@@ -263,38 +290,17 @@
                 const response = await fetch(API_URL + "?action=latest");
                 const result = await response.json();
                 if (result.error) return;
-
                 renderDashboard(result);
-                updateStatus(true);
             } catch (error) {
-                updateStatus(false);
+                console.error(error);
             } finally {
                 btn.disabled = false;
                 icon.classList.remove('spin-anim');
             }
         }
 
-        function updateStatus(isOnline) {
-            const badge = document.getElementById('statusBadge');
-            const dot = badge.querySelector('.status-dot');
-            const text = document.getElementById('statusText');
-            if (isOnline) {
-                badge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
-                badge.style.background = 'rgba(16, 185, 129, 0.15)';
-                badge.style.color = '#34d399';
-                dot.style.backgroundColor = '#34d399';
-                text.textContent = "ONLINE";
-            } else {
-                badge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-                badge.style.background = 'rgba(239, 68, 68, 0.15)';
-                badge.style.color = '#ef4444';
-                dot.style.backgroundColor = '#ef4444';
-                text.textContent = "OFFLINE";
-            }
-        }
-
         function renderDashboard(data) {
-            document.getElementById('lastUpdate').textContent = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '---';
+            document.getElementById('lastUpdate').textContent = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
 
             const container = document.getElementById('mainContainer');
             const raw = data.data || [];
@@ -305,139 +311,64 @@
 
             const groups = [
                 {
-                    mainTitle: "Sistema OXÍGENO",
-                    mainIcon: "bi-wind",
-                    subSections: [
-                        {
-                            title: "Compresor O2",
-                            items: [
-                                { label: "Horas", val: findVal("O2 Comp HRS"), unit: "Hrs" },
-                                { label: "Potencia", val: findVal("O2 Comp KW"), unit: "KW" },
-                                { label: "Acumulado", val: findVal("O2 Comp M3"), unit: "m³" }
-                            ]
-                        },
-                        {
-                            title: "Generador 1",
-                            items: [
-                                { label: "Horas", val: findVal("O2 Gen1 HRS"), unit: "Hrs" },
-                                { label: "Acumulado", val: findVal("O2 Gen1 M3"), unit: "m³" }
-                            ]
-                        },
-                        {
-                            title: "Generador 2",
-                            items: [
-                                { label: "Horas", val: findVal("O2 Gen2 HRS"), unit: "Hrs" },
-                                { label: "Acumulado", val: findVal("O2 Gen2 M3"), unit: "m³" }
-                            ]
-                        }
+                    title: "SISTEMA OXÍGENO",
+                    icon: "bi-wind",
+                    sections: [
+                        { title: "Compresor", items: [{ l: "Hrs", v: findVal("O2 Comp HRS"), u: "Hrs" }, { l: "KW", v: findVal("O2 Comp KW"), u: "KW" }, { l: "Flujo", v: findVal("O2 Comp M3"), u: "m³" }] },
+                        { title: "Gen. O2 1", items: [{ l: "Hrs", v: findVal("O2 Gen1 HRS"), u: "Hrs" }, { l: "Flujo", v: findVal("O2 Gen1 M3"), u: "m³" }] },
+                        { title: "Gen. O2 2", items: [{ l: "Hrs", v: findVal("O2 Gen2 HRS"), u: "Hrs" }, { l: "Flujo", v: findVal("O2 Gen2 M3"), u: "m³" }] }
                     ]
                 },
                 {
-                    mainTitle: "CONSUMO O2",
-                    mainIcon: "bi-graph-down-arrow",
-                    subSections: [
-                        {
-                            title: "Demanda Biomasa",
-                            items: [
-                                { label: "Fry 1", val: findVal("O2 Cons Fry"), unit: "" },
-                                { label: "Smolt 2", val: findVal("O2 Cons Smolt"), unit: "" }
-                            ]
-                        }
+                    title: "CONSUMO O2",
+                    icon: "bi-graph-down",
+                    sections: [
+                        { title: "Biomasa", items: [{ l: "Fry 1", v: findVal("O2 Cons Fry"), u: "Kg" }, { l: "Smolt", v: findVal("O2 Cons Smolt"), u: "Kg" }] }
                     ]
                 },
                 {
-                    mainTitle: "RED ELÉCTRICA",
-                    mainIcon: "bi-lightning-charge-fill",
-                    subSections: [
-                        {
-                            title: "Voltajes (UL-L)",
-                            items: [
-                                { label: "V12", val: findVal("Red V12"), unit: "V" },
-                                { label: "V23", val: findVal("Red V23"), unit: "V" },
-                                { label: "V31", val: findVal("Red V31"), unit: "V" }
-                            ]
-                        },
-                        {
-                            title: "Corrientes (I)",
-                            items: [
-                                { label: "A1", val: findVal("Red I1"), unit: "A" },
-                                { label: "A2", val: findVal("Red I2"), unit: "A" },
-                                { label: "A3", val: findVal("Red I3"), unit: "A" }
-                            ]
-                        },
-                        {
-                            title: "Potencia",
-                            items: [
-                                { label: "P Total", val: findVal("Red SumP KW"), unit: "KW" },
-                                { label: "EA+", val: findVal("Red EA GW"), unit: "GW" }
-                            ]
-                        }
+                    title: "RED ELÉCTRICA",
+                    icon: "bi-lightning-charge",
+                    sections: [
+                        { title: "Voltajes", items: [{ l: "V12", v: findVal("Red V12"), u: "V" }, { l: "V23", v: findVal("Red V23"), u: "V" }, { l: "V31", v: findVal("Red V31"), u: "V" }] },
+                        { title: "Corrientes", items: [{ l: "A1", v: findVal("Red I1"), u: "A" }, { l: "A2", v: findVal("Red I2"), u: "A" }, { l: "A3", v: findVal("Red I3"), u: "A" }] },
+                        { title: "Potencia", items: [{ l: "Total", v: findVal("Red SumP KW"), u: "KW" }, { l: "EA+", v: findVal("Red EA GW"), u: "GW" }] }
                     ]
                 },
                 {
-                    mainTitle: "GENERADORES DIESEL",
-                    mainIcon: "bi-fuel-pump-diesel",
-                    subSections: [
-                        {
-                            title: "Generador 1",
-                            items: [
-                                { label: "Hrs", val: findVal("D Gen1 HRS"), unit: "Hrs" },
-                                { label: "P", val: findVal("D Gen1 KW"), unit: "KW" },
-                                { label: "Diesel", val: findVal("D Gen1 Lts"), unit: "Lts" }
-                            ]
-                        },
-                        {
-                            title: "Generador 2",
-                            items: [
-                                { label: "Hrs", val: findVal("D Gen2 HRS"), unit: "Hrs" },
-                                { label: "P", val: findVal("D Gen2 KW"), unit: "KW" },
-                                { label: "Diesel", val: findVal("D Gen2 Lts"), unit: "Lts" }
-                            ]
-                        },
-                        {
-                            title: "Generador 3",
-                            items: [
-                                { label: "Hrs", val: findVal("D Gen3 HRS"), unit: "Hrs" },
-                                { label: "P", val: findVal("D Gen3 KW"), unit: "KW" },
-                                { label: "Diesel", val: findVal("D Gen3 Lts"), unit: "Lts" }
-                            ]
-                        }
+                    title: "GENERADORES",
+                    icon: "bi-fuel-pump",
+                    sections: [
+                        { title: "Diesel 1", items: [{ l: "Hrs", v: findVal("D Gen1 HRS"), u: "Hrs" }, { l: "KW", v: findVal("D Gen1 KW"), u: "KW" }, { l: "Lts", v: findVal("D Gen1 Lts"), u: "L" }] },
+                        { title: "Diesel 2", items: [{ l: "Hrs", v: findVal("D Gen2 HRS"), u: "Hrs" }, { l: "KW", v: findVal("D Gen2 KW"), u: "KW" }, { l: "Lts", v: findVal("D Gen2 Lts"), u: "L" }] },
+                        { title: "Diesel 3", items: [{ l: "Hrs", v: findVal("D Gen3 HRS"), u: "Hrs" }, { l: "KW", v: findVal("D Gen3 KW"), u: "KW" }, { l: "Lts", v: findVal("D Gen3 Lts"), u: "L" }] }
                     ]
                 }
             ];
 
-            // 1080p Layout: 2 Columns for optimal spacing
-            // col-md-6 means 2 massive cards per row
-            let html = '<div class="row g-4">';
+            let html = '<div class="dashboard-grid">';
 
             groups.forEach(group => {
                 html += `
-                <div class="col-12 col-xl-6">
-                    <div class="card bg-dark bg-opacity-25 border-secondary border-opacity-25 w-100 h-100">
-                        <div class="card-header border-bottom border-secondary border-opacity-25 bg-transparent py-3">
-                             <h4 class="m-0 text-accent fw-bold"><i class="bi ${group.mainIcon} me-2"></i> ${group.mainTitle}</h4>
+                <div class="dashboard-col">
+                    <div class="group-card">
+                        <div class="group-header text-accent fw-bold text-uppercase small d-flex align-items-center gap-2">
+                             <i class="bi ${group.icon}"></i> ${group.title}
                         </div>
-                        <div class="card-body p-4">
-                            <div class="row g-4">`;
+                        <div class="group-body">`;
 
-                group.subSections.forEach(sub => {
-                    // Each subsection takes full width or half depending on count
-                    // Making them distinct blocks
-                    html += `
-                        <div class="col-12">
-                            <div class="d-flex align-items-center mb-3">
-                                <span class="sub-section-badge">${sub.title}</span>
-                                <div class="flex-grow-1 border-bottom border-secondary border-opacity-25 ms-3"></div>
-                            </div>
-                            <div class="row g-3">`;
+                group.sections.forEach(sec => {
+                    html += `<div class="sub-section">
+                        <div class="sub-title">${sec.title}</div>
+                        <div class="row g-1">`;
 
-                    sub.items.forEach(item => {
+                    sec.items.forEach(item => {
                         html += `
                             <div class="col">
-                                <div class="data-card text-center d-flex flex-column justify-content-center">
-                                    <div class="card-value">${item.val}</div>
-                                    <div class="card-label mt-1">${item.label}</div>
-                                    ${item.unit ? `<div class="unit-label">${item.unit}</div>` : ''}
+                                <div class="data-item">
+                                    <div class="val-text">${item.v}</div>
+                                    <div class="label-text">${item.l}</div>
+                                    <div class="unit-text">${item.u}</div>
                                 </div>
                             </div>`;
                     });
@@ -445,17 +376,15 @@
                     html += `</div></div>`;
                 });
 
-                html += `</div></div></div></div>`;
+                html += `</div></div></div>`;
             });
 
             html += '</div>';
             container.innerHTML = html;
         }
 
-        // Init
         fetchData();
         setInterval(fetchData, REFRESH_INTERVAL);
-
     </script>
 </body>
 
