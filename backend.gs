@@ -146,11 +146,35 @@ function doGet(e) {
   // If action=latest, return the last submission data
   if (e.parameter && e.parameter.action === "latest") {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheetView = ss.getSheetByName(SHEET_NAME_VIEW);
+    let sheetView = ss.getSheetByName(SHEET_NAME_VIEW);
     
-    if (!sheetView) return ContentService.createTextOutput(JSON.stringify({error: "No data"})).setMimeType(ContentService.MimeType.JSON);
+    // Auto-create if missing
+    if (!sheetView) {
+      sheetView = ss.insertSheet(SHEET_NAME_VIEW);
+    }
     
-    // Quick read of the dashboard sheet we just formatted
+    // CHECK: Is View empty? If so, try to populate from DB
+    if (sheetView.getRange("B2").getValue() === "") {
+      const sheetDB = ss.getSheetByName(SHEET_NAME_DB);
+      if (sheetDB && sheetDB.getLastRow() >= 2) {
+         const lastRow = sheetDB.getLastRow();
+         // Col 2 = Responsable, Col 3+ = Values
+         const responsable = sheetDB.getRange(lastRow, 2).getValue();
+         // 27 Data Columns
+         const valores = sheetDB.getRange(lastRow, 3, 1, 27).getValues()[0];
+         
+         // Update the view sheet so it's ready
+         updateDashboard({
+           responsable: responsable,
+           valores: valores
+         });
+         
+         // Re-get sheetView after update to ensure we read fresh data
+         sheetView = ss.getSheetByName(SHEET_NAME_VIEW);
+      }
+    }
+    
+    // Now read from View (either pre-existing or just populated)
     const lastUpdate = sheetView.getRange("B2").getValue();
     const responsable = sheetView.getRange("B3").getValue();
     
@@ -172,4 +196,30 @@ function doGet(e) {
 
   // Default Ping
   return ContentService.createTextOutput(JSON.stringify({status: "online"})).setMimeType(ContentService.MimeType.JSON);
+}
+
+// --- MANUAL INIT FUNCTION ---
+// Run this ONCE from the GAS Editor to populate the dashboard with the last known data
+function manualInitDashboard() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheetDB = ss.getSheetByName(SHEET_NAME_DB);
+  
+  if (!sheetDB || sheetDB.getLastRow() < 2) {
+    Logger.log("No data found in DB to initialize.");
+    return;
+  }
+  
+  const lastRow = sheetDB.getLastRow();
+  // Col 1=Time, Col 2=Resp, Col 3...=Values
+  const responsable = sheetDB.getRange(lastRow, 2).getValue();
+  // We have 27 value columns defined in headers
+  const valores = sheetDB.getRange(lastRow, 3, 1, 27).getValues()[0];
+  
+  const data = {
+    responsable: responsable,
+    valores: valores
+  };
+  
+  updateDashboard(data);
+  Logger.log("Dashboard manually initialized with data from Row " + lastRow);
 }
