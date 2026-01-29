@@ -15,11 +15,11 @@
     <style>
         :root {
             --primary-bg: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --card-hover-bg: rgba(40, 55, 80, 0.8);
             --accent-color: #3b82f6;
             --text-main: #f8fafc;
-            --text-secondary: #94a3b8;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         body {
@@ -31,8 +31,8 @@
                 radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
             overflow-x: hidden;
-            font-size: 0.9rem;
-            /* Global Scale Down */
+            font-size: 16px;
+            /* Base size for 1080p */
         }
 
         /* Glassmorphism Header */
@@ -51,61 +51,85 @@
             backdrop-filter: blur(10px);
             border: var(--glass-border);
             border-radius: 12px;
-            padding: 0.75rem;
-            /* Reduced Padding */
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            padding: 1.25rem;
+            /* Increased Padding */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             height: 100%;
+            cursor: default;
         }
 
+        /* HOVER ANIMATION REQUESTED */
         .data-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+            border-color: rgba(59, 130, 246, 0.5);
+            background: var(--card-hover-bg);
+            z-index: 10;
         }
 
         .card-label {
-            color: var(--text-secondary);
-            font-size: 0.7rem;
+            color: #bdc3c7;
+            /* Whitish grey for labels */
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
         }
 
         .card-value {
-            font-size: 1.25rem;
-            /* Smaller Value Font */
+            font-size: 2rem;
+            /* Large readable numbers */
             font-weight: 700;
-            background: linear-gradient(90deg, #fff, #cbd5e1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ffffff;
+            /* PURE WHITE */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             line-height: 1.2;
+        }
+
+        .unit-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            font-weight: 400;
         }
 
         .section-title {
             color: var(--accent-color);
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sub-section-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .status-badge {
-            font-size: 0.7rem;
-            padding: 0.35em 0.75em;
+            font-size: 0.85rem;
+            padding: 0.5em 1em;
             border-radius: 20px;
             background: rgba(16, 185, 129, 0.2);
             color: #34d399;
             border: 1px solid rgba(16, 185, 129, 0.3);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
 
         .status-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             background-color: #34d399;
             border-radius: 50%;
             box-shadow: 0 0 8px #34d399;
@@ -131,7 +155,7 @@
 
         #refreshTimer {
             width: 0%;
-            height: 2px;
+            height: 3px;
             background: var(--accent-color);
             position: fixed;
             top: 0;
@@ -160,12 +184,8 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .letter-spacing-2 {
-            letter-spacing: 1.5px;
-        }
-
         .empty-state {
-            min-height: 50vh;
+            min-height: 60vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -180,24 +200,24 @@
     <!-- Progress Bar for Refresh -->
     <div id="refreshTimer"></div>
 
-    <header class="glass-header py-2 mb-3">
+    <header class="glass-header py-3 mb-4">
         <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-                <img src="Cermaq_logo2.png" alt="Cermaq" height="32" class="d-inline-block align-text-top filter-white">
+                <img src="Cermaq_logo2.png" alt="Cermaq" height="42" class="d-inline-block align-text-top filter-white">
                 <div class="border-start border-secondary ps-3 ms-2">
-                    <h1 class="h6 m-0 fw-bold text-gradient text-uppercase letter-spacing-2">REGISTRO O2 Y ENERGÍA</h1>
+                    <h1 class="h4 m-0 fw-bold text-gradient text-uppercase" style="letter-spacing: 3px;">REGISTRO O2 Y
+                        ENERGÍA</h1>
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-4">
                 <div class="text-end d-none d-md-block">
-                    <div id="lastUpdate" class="text-muted" style="font-size: 0.75rem;">Última sincro: --:--</div>
+                    <div id="lastUpdate" class="text-white-50 small">Última sincro: --:--</div>
                 </div>
                 <button onclick="fetchData()" id="btnRefresh"
-                    class="btn btn-outline-light btn-sm rounded-pill px-2 py-1 d-flex align-items-center gap-2 border-opacity-25"
-                    style="font-size: 0.75rem;">
+                    class="btn btn-outline-light rounded-pill px-3 py-1 d-flex align-items-center gap-2 border-opacity-50">
                     <i class="bi bi-arrow-clockwise"></i> <span class="d-none d-sm-inline">Actualizar</span>
                 </button>
-                <div class="status-badge py-1 px-2" id="statusBadge" style="font-size: 0.7rem;">
+                <div class="status-badge" id="statusBadge">
                     <div class="status-dot"></div>
                     <span id="statusText">CONECTADO</span>
                 </div>
@@ -205,11 +225,11 @@
         </div>
     </header>
 
-    <div class="container-fluid px-4 pb-4" id="mainContainer">
+    <div class="container-fluid px-4 pb-5" id="mainContainer">
         <!-- Content injected via JS -->
         <div class="empty-state">
-            <div class="spinner-border text-primary spinner-border-sm mb-2" role="status"></div>
-            <p class="small text-muted">Conectando...</p>
+            <div class="spinner-border text-primary mb-3" role="status"></div>
+            <p>Conectando con Servidor Central...</p>
         </div>
     </div>
 
@@ -259,14 +279,14 @@
             const dot = badge.querySelector('.status-dot');
             const text = document.getElementById('statusText');
             if (isOnline) {
-                badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-                badge.style.background = 'rgba(16, 185, 129, 0.1)';
+                badge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+                badge.style.background = 'rgba(16, 185, 129, 0.15)';
                 badge.style.color = '#34d399';
                 dot.style.backgroundColor = '#34d399';
                 text.textContent = "ONLINE";
             } else {
-                badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-                badge.style.background = 'rgba(239, 68, 68, 0.1)';
+                badge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+                badge.style.background = 'rgba(239, 68, 68, 0.15)';
                 badge.style.color = '#ef4444';
                 dot.style.backgroundColor = '#ef4444';
                 text.textContent = "OFFLINE";
@@ -274,7 +294,7 @@
         }
 
         function renderDashboard(data) {
-            document.getElementById('lastUpdate').textContent = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+            document.getElementById('lastUpdate').textContent = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '---';
 
             const container = document.getElementById('mainContainer');
             const raw = data.data || [];
@@ -359,7 +379,7 @@
                     mainIcon: "bi-fuel-pump-diesel",
                     subSections: [
                         {
-                            title: "Gen 1",
+                            title: "Generador 1",
                             items: [
                                 { label: "Hrs", val: findVal("D Gen1 HRS"), unit: "Hrs" },
                                 { label: "P", val: findVal("D Gen1 KW"), unit: "KW" },
@@ -367,7 +387,7 @@
                             ]
                         },
                         {
-                            title: "Gen 2",
+                            title: "Generador 2",
                             items: [
                                 { label: "Hrs", val: findVal("D Gen2 HRS"), unit: "Hrs" },
                                 { label: "P", val: findVal("D Gen2 KW"), unit: "KW" },
@@ -375,7 +395,7 @@
                             ]
                         },
                         {
-                            title: "Gen 3",
+                            title: "Generador 3",
                             items: [
                                 { label: "Hrs", val: findVal("D Gen3 HRS"), unit: "Hrs" },
                                 { label: "P", val: findVal("D Gen3 KW"), unit: "KW" },
@@ -386,50 +406,46 @@
                 }
             ];
 
-            // Build Compact HTML
-            // Using small columns, reduced gaps
-            let html = '<div class="row g-3">';
+            // 1080p Layout: 2 Columns for optimal spacing
+            // col-md-6 means 2 massive cards per row
+            let html = '<div class="row g-4">';
 
             groups.forEach(group => {
-                // Adjust column sizing based on density
-                let colClass = "col-12 col-xl-6 col-xxl-3";
-                // Using bootstrap grid to layout main categories
-
                 html += `
-                <div class="${colClass} d-flex">
-                    <div class="card bg-dark bg-opacity-25 border-secondary border-opacity-10 w-100 flex-fill">
-                        <div class="card-header border-bottom border-secondary border-opacity-10 bg-transparent py-2">
-                             <h6 class="m-0 text-accent fw-bold small text-uppercase letter-spacing-2"><i class="bi ${group.mainIcon} me-2"></i> ${group.mainTitle}</h6>
+                <div class="col-12 col-xl-6">
+                    <div class="card bg-dark bg-opacity-25 border-secondary border-opacity-25 w-100 h-100">
+                        <div class="card-header border-bottom border-secondary border-opacity-25 bg-transparent py-3">
+                             <h4 class="m-0 text-accent fw-bold"><i class="bi ${group.mainIcon} me-2"></i> ${group.mainTitle}</h4>
                         </div>
-                        <div class="card-body p-2">
-                            <div class="row g-2">`;
+                        <div class="card-body p-4">
+                            <div class="row g-4">`;
 
                 group.subSections.forEach(sub => {
+                    // Each subsection takes full width or half depending on count
+                    // Making them distinct blocks
                     html += `
                         <div class="col-12">
-                            <div class="bg-dark bg-opacity-10 rounded p-2 border border-secondary border-opacity-10 h-100">
-                                <div class="d-flex align-items-center mb-1">
-                                    <span class="text-secondary small fw-semibold text-uppercase" style="font-size: 0.65rem">${sub.title}</span>
-                                    <div class="flex-grow-1 border-bottom border-secondary border-opacity-10 ms-2"></div>
-                                </div>
-                                <div class="row g-1">`;
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="sub-section-badge">${sub.title}</span>
+                                <div class="flex-grow-1 border-bottom border-secondary border-opacity-25 ms-3"></div>
+                            </div>
+                            <div class="row g-3">`;
 
                     sub.items.forEach(item => {
                         html += `
                             <div class="col">
-                                <div class="data-card p-1 text-center position-relative overflow-hidden h-100 d-flex flex-column justify-content-center bg-transparent border-0 shadow-none" style="min-height: auto;">
-                                    <div class="card-value fw-bold text-nowrap user-select-none" style="font-size: 1.1rem;">${item.val}</div>
-                                    <div class="small text-muted opacity-75 text-uppercase text-truncate" style="font-size:0.6rem; letter-spacing: 0.5px;">
-                                        ${item.label} <span class="text-accent opacity-50">${item.unit ? '/ ' + item.unit : ''}</span>
-                                    </div>
+                                <div class="data-card text-center d-flex flex-column justify-content-center">
+                                    <div class="card-value">${item.val}</div>
+                                    <div class="card-label mt-1">${item.label}</div>
+                                    ${item.unit ? `<div class="unit-label">${item.unit}</div>` : ''}
                                 </div>
                             </div>`;
                     });
 
-                    html += `</div></div></div>`; // End Subsection 
+                    html += `</div></div>`;
                 });
 
-                html += `</div></div></div></div>`; // End Main Group 
+                html += `</div></div></div></div>`;
             });
 
             html += '</div>';
