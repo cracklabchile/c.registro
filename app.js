@@ -45,12 +45,9 @@ function checkLastSubmission() {
     if (lastSub) {
         const date = new Date(parseInt(lastSub));
         const now = new Date();
-        // Simple check: if submitted less than 4 hours ago, warn user (or block)
-        // For this PWA, we'll just show a toast or message, but the user requested "Registro del turno completado"
         const diffHours = (now - date) / 1000 / 60 / 60;
         if (diffHours < 4 && appMode !== 'ADMIN') {
-            // Optional: Disable form or show banner
-            // document.querySelector('.main-container').innerHTML = '<div class="alert alert-success mt-5">Registro del turno completado.</div><div class="text-center mt-3"><i class="bi bi-gear-fill admin-trigger" onclick="location.reload()"></i></div>';
+            // Optional: Logic to warn if submitting too frequently
         }
     }
 }
@@ -60,8 +57,8 @@ function handleSubmit(event) {
 
     // Gather Data
     const responsable = document.getElementById('responsable').value;
-    if (!responsable) {
-        alert("Por favor seleccione un Responsable.");
+    if (!responsable || !responsable.trim()) {
+        alert("El nombre del Responsable es obligatorio.");
         return;
     }
 
@@ -70,7 +67,8 @@ function handleSubmit(event) {
 
     // Simple summary builder
     fieldIds.forEach(id => {
-        const val = document.getElementById(id).value;
+        const el = document.getElementById(id);
+        const val = el ? el.value : "";
         if (val) {
             // beautify label
             const label = id.replace(/_/g, ' ').toUpperCase();
@@ -92,7 +90,12 @@ function sendData() {
     btnFinalSend.innerText = "Enviando...";
 
     const responsable = document.getElementById('responsable').value;
-    const valores = fieldIds.map(id => document.getElementById(id).value || ""); // Send empty string if null
+
+    // Map values safely. If element missing (like red_in), return empty string
+    const valores = fieldIds.map(id => {
+        const el = document.getElementById(id);
+        return el ? (el.value || "") : "";
+    });
 
     const payload = {
         modo: appMode,
@@ -101,7 +104,6 @@ function sendData() {
         valores: valores
     };
 
-    // Simulate sending (Since we don't have URL yet)
     console.log("Payload:", payload);
 
     fetch(API_URL, {
@@ -113,7 +115,6 @@ function sendData() {
         .then(() => {
             alert("Datos guardados exitosamente.");
             finishSubmission();
-            // Since no-cors returns opaque response, we assume success if no network error
         })
         .catch(err => {
             console.error(err);
@@ -136,7 +137,7 @@ function finishSubmission() {
             <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
             <h2 class="mt-3">Registro Exitoso</h2>
             <p class="text-muted">Registro del turno completado.</p>
-            <button class="btn btn-outline-light mt-4" onclick="location.reload()">Nuevo Registro (Admin)</button>
+            <button class="btn btn-outline-primary mt-4" onclick="location.reload()">Nuevo Registro (Admin)</button>
         </div>
         `;
     }
