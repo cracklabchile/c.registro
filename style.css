@@ -1,12 +1,16 @@
 :root {
-    --bg-color: #0f172a;
-    --card-bg: rgba(30, 41, 59, 0.7);
-    --primary-color: #3b82f6;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --primary-color: #0284c7;
+    /* Cermaq Blue-ish */
     --accent-color: #0ea5e9;
-    --text-color: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --input-bg: rgba(15, 23, 42, 0.6);
+    --text-color: #334155;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --input-bg: #f1f5f9;
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 body {
@@ -15,9 +19,6 @@ body {
     font-family: 'Outfit', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
-    background-image: 
-        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.15) 0%, transparent 40%);
 }
 
 .main-container {
@@ -28,43 +29,72 @@ body {
 
 /* Animations */
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
+
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.fade-in-down { animation: fadeInDown 0.6s ease-out; }
-.fade-in-up { animation: fadeInUp 0.6s ease-out backwards; }
+.fade-in-down {
+    animation: fadeInDown 0.6s ease-out;
+}
 
-/* Typography */
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out backwards;
+}
+
+/* Header */
+.app-header {
+    background: transparent;
+    padding: 10px 0;
+}
+
 .app-title {
+    color: var(--primary-color);
     font-weight: 700;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
-/* Glassmorphism Cards */
+/* Cards (Light Mode) */
 .glass-card {
     background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border-color);
     border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    /* For header color */
+}
+
+.glass-card:hover {
+    box-shadow: var(--shadow-lg);
 }
 
 .card-header-custom {
     padding: 15px 20px;
     border-bottom: 1px solid var(--border-color);
     font-weight: 600;
-    color: var(--accent-color);
-    background: rgba(255, 255, 255, 0.02);
+    color: var(--primary-color);
+    background: #f8fafc;
     border-radius: 16px 16px 0 0;
+    display: flex;
+    align-items: center;
 }
 
 .card-body {
@@ -75,49 +105,74 @@ body {
 .custom-input {
     background: var(--input-bg) !important;
     border: 1px solid var(--border-color) !important;
-    color: #fff !important;
-    border-radius: 10px;
+    color: var(--text-color) !important;
+    border-radius: 8px;
     font-weight: 500;
 }
 
 .custom-input:focus {
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4) !important;
-    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2) !important;
+    border-color: var(--accent-color) !important;
+    background: #fff !important;
 }
 
 .custom-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: #94a3b8;
 }
 
-.form-floating > label {
-    color: rgba(255, 255, 255, 0.5);
+.form-floating>label {
+    color: var(--text-muted);
 }
-.form-floating > .form-control:focus ~ label,
-.form-floating > .form-control:not(:placeholder-shown) ~ label {
-    color: var(--accent-color);
+
+.form-floating>.form-control:focus~label,
+.form-floating>.form-control:not(:placeholder-shown)~label {
+    color: var(--primary-color);
+    font-weight: 600;
 }
 
 .section-subtitle {
     font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     color: var(--text-muted);
-    margin-bottom: 10px;
-    margin-top: 5px;
-    border-left: 2px solid var(--primary-color);
-    padding-left: 8px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    margin-top: 15px;
+    /* border-left: 3px solid var(--accent-color); */
+    /* padding-left: 8px; */
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 4px;
+    display: block;
+    width: 100%;
 }
 
-/* Generators */
+/* Generators Block Styling */
 .generator-block {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 10px;
+    background: #ffffff;
+    padding: 15px;
     border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 15px;
 }
+
 .gen-title {
-    font-size: 0.8rem;
-    color: #fff;
-    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.gen-title::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    margin-right: 8px;
 }
 
 /* Buttons */
@@ -125,10 +180,17 @@ body {
     background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
     border: none;
     border-radius: 12px;
-    padding: 12px;
+    padding: 14px;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    font-size: 1.1rem;
+    box-shadow: var(--shadow-md);
     transition: transform 0.2s, box-shadow 0.2s;
+    color: white;
+}
+
+.custom-btn:hover {
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, #0369a1, #0284c7);
 }
 
 .custom-btn:active {
@@ -137,18 +199,33 @@ body {
 
 /* Modal */
 .glass-modal {
-    background: rgba(15, 23, 42, 0.95);
-    border: 1px solid var(--border-color);
-    backdrop-filter: blur(10px);
+    background: #ffffff;
+    border: none;
+    box-shadow: var(--shadow-lg);
+    color: var(--text-color);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-body {
+    color: var(--text-color);
+}
+
+.btn-close-white {
+    filter: invert(1);
+    /* Correction primarily for dark mode classes, but here we want standard close button */
 }
 
 /* Admin Trigger */
 .admin-trigger {
     font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
     cursor: pointer;
     transition: color 0.3s;
 }
+
 .admin-trigger:hover {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-muted);
 }
