@@ -114,3 +114,7 @@ function doPost(e) {
     lock.releaseLock();
   }
 }
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({status: "online"}));
+}

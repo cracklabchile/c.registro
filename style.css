@@ -1,184 +1,111 @@
-/* Updated v3 - Force Refresh */
+/* Cloned Styles from Reference Site */
 :root {
-    --bg-color: #f8fafc;
-    --card-bg: #ffffff;
-    --primary-color: #0284c7;
-    /* Cermaq Blue-ish */
-    --accent-color: #0ea5e9;
-    --text-color: #334155;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --input-bg: #f1f5f9;
-    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --primary: #004B8D;
+    --primary-dark: #003666;
+    --accent: #00A9E0;
+    --success: #10b981;
+    --danger: #ef4444;
+    --bg-gradient: linear-gradient(135deg, #f6f8fd 0%, #e1e9f4 100%);
+    --surface: rgba(255, 255, 255, 0.9);
+    --glass: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --text: #1e293b;
+    --text-light: #64748b;
+    --shadow: 0 8px 32px 0 rgba(142, 142, 142, 0.07);
+    --radius: 20px;
+
+    /* Mapping old vars to new ones for compatibility */
+    --accent-color: var(--accent);
+    --primary-color: var(--primary);
+    --text-color: var(--text);
+    --text-muted: var(--text-light);
+    --border-color: #cbd5e1;
+    --input-bg: #f8fafc;
+    --card-bg: var(--surface);
+    --shadow-md: var(--shadow);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
     font-family: 'Outfit', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text);
+    margin: 0;
     min-height: 100vh;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.main-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px 15px;
-}
-
-/* Animations */
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in-down {
-    animation: fadeInDown 0.6s ease-out;
-}
-
-.fade-in-up {
-    animation: fadeInUp 0.6s ease-out backwards;
-}
-
-/* Header */
-/* Header (Sticky & Transparent) */
+/* Glassmorphism Navigation (Reference Style) */
 .app-header {
-    background: rgba(248, 250, 252, 0.85);
-    /* Semitransparent */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 10px 0;
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    /* Stacked layout for title */
+    justify-content: center;
+    align-items: center;
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem !important;
 }
 
-.app-title {
-    color: var(--primary-color);
-    font-weight: 700;
+.nav-logo {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 4px;
 }
 
-/* Network Status Badge */
-.network-status {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    z-index: 1001;
+/* Cleaner Badge (Reference Style) */
+.status-pill {
+    padding: 4px 12px;
     font-size: 0.75rem;
-    padding: 5px 12px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(4px);
     border-radius: 20px;
-    font-weight: 700;
-    transition: all 0.3s;
-    opacity: 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.status-offline {
-    background-color: #ef4444;
-    color: white;
-    opacity: 1 !important;
-}
-
-.status-online {
-    background-color: #22c55e;
-    color: white;
-    opacity: 1;
-    /* Temporarily visible */
-}
-
-/* Cards (Light Mode) */
-.glass-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: var(--shadow-md);
-    transition: transform 0.2s, box-shadow 0.2s;
-    overflow: hidden;
-    /* For header color */
-}
-
-.glass-card:hover {
-    box-shadow: var(--shadow-lg);
-}
-
-.card-header-custom {
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--border-color);
     font-weight: 600;
-    color: var(--primary-color);
-    background: #f8fafc;
-    border-radius: 16px 16px 0 0;
-    display: flex;
+    color: var(--text-light);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: inline-flex;
     align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
 }
 
-.card-body {
-    padding: 20px;
+.status-indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #cbd5e1;
+    /* Default grey */
 }
 
-/* Inputs */
-.custom-input {
-    background: var(--input-bg) !important;
-    border: 1px solid var(--border-color) !important;
-    color: var(--text-color) !important;
-    border-radius: 8px;
-    font-weight: 500;
+.status-pill.online .status-indicator-dot {
+    background-color: var(--success);
+    box-shadow: 0 0 8px var(--success);
 }
 
-.custom-input:focus {
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2) !important;
-    border-color: var(--accent-color) !important;
-    background: #fff !important;
-}
-
-.custom-input::placeholder {
-    color: #94a3b8;
-}
-
-.form-floating>label {
-    color: var(--text-muted);
-}
-
-.form-floating>.form-control:focus~label,
-.form-floating>.form-control:not(:placeholder-shown)~label {
-    color: var(--primary-color);
-    font-weight: 600;
+.status-pill.offline .status-indicator-dot {
+    background-color: var(--danger);
 }
 
 .section-subtitle {
+    /* Adapting to new vars */
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--text-muted);
+    color: var(--text-light);
     font-weight: 700;
     margin-bottom: 12px;
     margin-top: 15px;
-    /* border-left: 3px solid var(--accent-color); */
-    /* padding-left: 8px; */
-    border-bottom: 2px solid #f1f5f9;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
     padding-bottom: 4px;
     display: block;
     width: 100%;
