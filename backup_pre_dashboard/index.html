@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Registro Planta | Cermaq</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css?v=5">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="Q.png">
+    <meta name="theme-color" content="#f8fafc">
+</head>
+
+<body>
+
+    <!-- Reference-style Header -->
+    <header class="app-header fade-in-down">
+        <img src="Cermaq_logo2.png" alt="Cermaq Logo" class="nav-logo">
+
+        <p class="text-muted small fw-bold m-0" style="font-size: 0.7rem; letter-spacing: 1px;">CONTROL O2 Y ENERGÍA</p>
+
+        <div id="networkPill" class="status-pill mt-2">
+            <div class="status-indicator-dot"></div>
+            <span id="networkText">Comprobando...</span>
+        </div>
+    </header>
+
+    <form id="registroForm" novalidate onsubmit="handleSubmit(event)">
+
+        <!-- Card: Identificación -->
+        <div class="card glass-card mb-4 fade-in-up" style="animation-delay: 0.1s">
+            <div class="card-header-custom">
+                <i class="bi bi-person-badge-fill me-2"></i>Identificación
+            </div>
+            <div class="card-body">
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control custom-input" id="responsable" placeholder="Nombre Apellido"
+                        required>
+                    <label for="responsable">Responsable del Turno (Nombre)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card: Oxígeno -->
+        <div class="card glass-card mb-4 fade-in-up" style="animation-delay: 0.2s">
+            <div class="card-header-custom">
+                <i class="bi bi-wind me-2"></i>Sistema de Oxígeno
+            </div>
+            <div class="card-body">
+                <h6 class="section-subtitle">Compresor</h6>
+                <div class="row g-2 mb-3">
+                    <div class="col-4">
+                        <div class="form-floating">
+                            <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                id="o2_comp_kw" placeholder="KW">
+                            <label>KW</label>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-floating">
+                            <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                id="o2_comp_m3" placeholder="m3">
+                            <label>m³</label>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-floating">
+                            <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                id="o2_comp_hrs" placeholder="Hrs">
+                            <label>Hrs</label>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="section-subtitle">Generadores O₂</h6>
+                <!-- Displayed separately as requested -->
+                <div class="generator-block">
+                    <h6 class="gen-title">Generador 1</h6>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="o2_gen1_hrs" placeholder="Horas">
+                                <label>Horas</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="o2_gen1_m3" placeholder="m3">
+                                <label>m³</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="generator-block">
+                    <h6 class="gen-title">Generador 2</h6>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="o2_gen2_hrs" placeholder="Horas">
+                                <label>Horas</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="o2_gen2_m3" placeholder="m3">
+                                <label>m³</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="section-subtitle">Consumo O₂</h6>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div class="form-floating">
+                            <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                id="o2_cons_fry" placeholder="Fry">
+                            <label>Fry</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-floating">
+                            <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                id="o2_cons_smolt" placeholder="Smolt">
+                            <label>Smolt</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card: Energía -->
+        <div class="card glass-card mb-4 fade-in-up" style="animation-delay: 0.3s">
+            <div class="card-header-custom">
+                <i class="bi bi-lightning-charge-fill me-2"></i>Energía (Red EMpro)
+            </div>
+            <div class="card-body">
+
+                <h6 class="section-subtitle">Voltaje (V)</h6>
+                <div class="row g-2 mb-3">
+                    <div class="col-4"><input type="number" inputmode="numeric" step="1"
+                            class="form-control custom-input text-center" id="red_v12" placeholder="V12"></div>
+                    <div class="col-4"><input type="number" inputmode="numeric" step="1"
+                            class="form-control custom-input text-center" id="red_v23" placeholder="V23"></div>
+                    <div class="col-4"><input type="number" inputmode="numeric" step="1"
+                            class="form-control custom-input text-center" id="red_v31" placeholder="V31"></div>
+                </div>
+
+                <h6 class="section-subtitle">Corriente (A)</h6>
+                <div class="row g-2 mb-3">
+                    <div class="col-4"><input type="number" inputmode="numeric" step="1"
+                            class="form-control custom-input text-center px-1" id="red_i1" placeholder="I1"></div>
+                    <div class="col-4"><input type="number" inputmode="numeric" step="1"
+                            class="form-control custom-input text-center px-1" id="red_i2" placeholder="I2"></div>
+                    <div class="col-4"><input type="number" inputmode="numeric" step="1"
+                            class="form-control custom-input text-center px-1" id="red_i3" placeholder="I3"></div>
+                    <!-- Removed Red_IN (IN) as requested, removed from layout but backend logic needs handling -->
+                </div>
+
+                <h6 class="section-subtitle">Potencia Total</h6>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div class="form-floating">
+                            <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                id="red_sump_kw" placeholder="KW">
+                            <label>Sum P (KW)</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-floating">
+                            <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                id="red_ea_gw" placeholder="GW">
+                            <label>EA+ (GW)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card: Generadores Diesel -->
+        <div class="card glass-card mb-4 fade-in-up" style="animation-delay: 0.4s">
+            <div class="card-header-custom">
+                <i class="bi bi-fuel-pump-diesel-fill me-2"></i>Generadores Diesel
+            </div>
+            <div class="card-body">
+                <!-- Gen 1 -->
+                <div class="generator-block">
+                    <h6 class="gen-title">Generador 1</h6>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="d_gen1_hrs" placeholder="Hrs">
+                                <label>Hrs</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="d_gen1_kw" placeholder="KW">
+                                <label>KW</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="d_gen1_lts" placeholder="Lts">
+                                <label>Lts</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Gen 2 -->
+                <div class="generator-block">
+                    <h6 class="gen-title">Generador 2</h6>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="d_gen2_hrs" placeholder="Hrs">
+                                <label>Hrs</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="d_gen2_kw" placeholder="KW">
+                                <label>KW</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="d_gen2_lts" placeholder="Lts">
+                                <label>Lts</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Gen 3 -->
+                <div class="generator-block">
+                    <h6 class="gen-title">Generador 3</h6>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="d_gen3_hrs" placeholder="Hrs">
+                                <label>Hrs</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="d_gen3_kw" placeholder="KW">
+                                <label>KW</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="number" inputmode="numeric" step="1" class="form-control custom-input"
+                                    id="d_gen3_lts" placeholder="Lts">
+                                <label>Lts</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-grid mb-5">
+            <button type="submit" class="btn btn-primary btn-lg custom-btn">Confirmar y Enviar</button>
+        </div>
+
+    </form>
+
+    <!-- Admin Trigger -->
+    <div class="text-center pb-4">
+        <i class="bi bi-gear-fill admin-trigger" onclick="toggleAdmin()"></i>
+        <p class="text-muted small mt-2" style="font-size: 0.7rem;">v5.0 (Latest)</p>
+    </div>
+
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Registros</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalSummary">
+                    <!-- Summary injected by JS -->
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Editar</button>
+                    <button type="button" class="btn btn-success" id="btnFinalSend" onclick="sendData()">Enviar
+                        Definitivo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Logic -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js?v=5"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js');
+        }
+    </script>
+</body>
+
+</html>

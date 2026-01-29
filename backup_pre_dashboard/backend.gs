@@ -79,9 +79,6 @@ function doPost(e) {
     const nuevaFila = [new Date(), data.responsable, ...data.valores];
     sheet.appendRow(nuevaFila);
     
-    // Update Dashboard View
-    updateDashboard(data);
-
     return returnJSON({result: "success", message: "Datos guardados"});
     
   } catch (err) {
@@ -91,85 +88,7 @@ function doPost(e) {
   }
 }
 
-// Helper to update the Visual Dashboard Sheet
-function updateDashboard(data) {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheetView = ss.getSheetByName(SHEET_NAME_VIEW);
-    if (!sheetView) sheetView = ss.insertSheet(SHEET_NAME_VIEW);
-    
-    sheetView.clearContents();
-    
-    // Header
-    sheetView.getRange("A1:C1").merge().setValue("ÚLTIMO REGISTRO ENERGÍA & O2")
-      .setFontWeight("bold").setBackground("#1a73e8").setFontColor("white").setHorizontalAlignment("center");
-      
-    sheetView.getRange("A2").setValue("Fecha:");
-    sheetView.getRange("B2").setValue(new Date());
-    sheetView.getRange("A3").setValue("Responsable:");
-    sheetView.getRange("B3").setValue(data.responsable);
-    
-    // Data Loop
-    let row = 5;
-    const labels = [
-       "O2 Comp KW", "O2 Comp M3", "O2 Comp HRS", 
-       "O2 Gen1 HRS", "O2 Gen1 M3",
-       "O2 Gen2 HRS", "O2 Gen2 M3",
-       "O2 Cons Fry", "O2 Cons Smolt",
-       "Red V12", "Red V23", "Red V31",
-       "Red I1", "Red I2", "Red I3", "Red IN",
-       "Red SumP KW", "Red EA GW",
-       "D Gen1 HRS", "D Gen1 KW", "D Gen1 Lts",
-       "D Gen2 HRS", "D Gen2 KW", "D Gen2 Lts",
-       "D Gen3 HRS", "D Gen3 KW", "D Gen3 Lts"
-    ];
-    
-    // Write labels and values
-    // data.valores matches the order of labels
-    for (let i = 0; i < labels.length; i++) {
-      sheetView.getRange(row, 1).setValue(labels[i]).setFontWeight("bold");
-      sheetView.getRange(row, 2).setValue(data.valores[i] || "-");
-      row++;
-    }
-    
-    // Formatting
-    sheetView.getRange("A2:A" + (row-1)).setFontWeight("bold");
-    sheetView.autoResizeColumns(1, 2);
-    
-  } catch(e) {
-    console.error("Error updates dashboard: " + e.toString());
-  }
-}
-
-// Ping for Network Check OR Get Latest Data
+// Ping for Network Check
 function doGet(e) {
-  // If action=latest, return the last submission data
-  if (e.parameter && e.parameter.action === "latest") {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheetView = ss.getSheetByName(SHEET_NAME_VIEW);
-    
-    if (!sheetView) return ContentService.createTextOutput(JSON.stringify({error: "No data"})).setMimeType(ContentService.MimeType.JSON);
-    
-    // Quick read of the dashboard sheet we just formatted
-    const lastUpdate = sheetView.getRange("B2").getValue();
-    const responsable = sheetView.getRange("B3").getValue();
-    
-    // Read key-values starting at row 5
-    const lastRow = sheetView.getLastRow();
-    let values = [];
-    if (lastRow >= 5) {
-       values = sheetView.getRange(5, 1, lastRow - 4, 2).getValues(); // Read Col A and B
-    }
-    
-    const result = {
-      timestamp: lastUpdate,
-      responsable: responsable,
-      data: values // [[Label, Value], [Label, Value]...]
-    };
-    
-    return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
-  }
-
-  // Default Ping
   return ContentService.createTextOutput(JSON.stringify({status: "online"})).setMimeType(ContentService.MimeType.JSON);
 }

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor F1 - Energía & O2</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #3b82f6;
+            --text-main: #f8fafc;
+            --text-secondary: #94a3b8;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Header */
+        .glass-header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Glass Cards */
+        .data-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+
+        .data-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .card-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), transparent);
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.5em 1em;
+            border-radius: 20px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #34d399;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #34d399;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #refreshTimer {
+            width: 0%;
+            height: 2px;
+            background: var(--accent-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: width 1s linear;
+        }
+
+        .empty-state {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Progress Bar for Refresh -->
+    <div id="refreshTimer"></div>
+
+    <header class="glass-header py-3 mb-4">
+        <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-grid-1x2-fill text-primary fs-4"></i>
+                <h1 class="h4 m-0 fw-bold">Monitor F1 <span class="fw-light opacity-75">| Energía & O2</span></h1>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="text-end d-none d-md-block">
+                    <div id="lastUpdate" class="text-muted small">Esperando datos...</div>
+                    <div id="responsableName" class="fw-bold text-accent">---</div>
+                </div>
+                <div class="status-badge" id="statusBadge">
+                    <div class="status-dot"></div>
+                    <span id="statusText">CONECTADO</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid px-4" id="mainContainer">
+        <!-- Content injected via JS -->
+        <div class="empty-state">
+            <div class="spinner-border text-primary mb-3" role="status"></div>
+            <p>Cargando datos desde el servidor...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzCglGjiB2Dqwl6UAGpNWaR-OI29BfX72wn6avZESrdeqJc_N-qQyPxML0AqxD0Fv5l/exec";
+        const REFRESH_INTERVAL = 30000; // 30 seconds
+        let timerWidth = 0;
+        let timerInterval;
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerWidth = 0;
+            const step = 100 / (REFRESH_INTERVAL / 1000);
+
+            document.getElementById('refreshTimer').style.width = '0%';
+
+            timerInterval = setInterval(() => {
+                timerWidth += step;
+                document.getElementById('refreshTimer').style.width = timerWidth + '%';
+                if (timerWidth >= 100) clearInterval(timerInterval);
+            }, 1000);
+        }
+
+        async function fetchData() {
+            startTimer();
+            try {
+                // IMPORTANT: Add ?action=latest to the URL
+                const response = await fetch(API_URL + "?action=latest");
+                const result = await response.json();
+
+                if (result.error) {
+                    console.warn("Server Error:", result.error);
+                    return; // Keep showing old data if fetch fails slightly
+                }
+
+                renderDashboard(result);
+                updateStatus(true);
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+                updateStatus(false);
+            }
+        }
+
+        function updateStatus(isOnline) {
+            const badge = document.getElementById('statusBadge');
+            const dot = badge.querySelector('.status-dot');
+            const text = document.getElementById('statusText');
+
+            if (isOnline) {
+                badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                badge.style.color = '#34d399';
+                dot.style.backgroundColor = '#34d399';
+                text.textContent = "CONECTADO";
+            } else {
+                badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                badge.style.background = 'rgba(239, 68, 68, 0.2)';
+                badge.style.color = '#ef4444';
+                dot.style.backgroundColor = '#ef4444';
+                text.textContent = "OFFLINE";
+            }
+        }
+
+        function renderDashboard(data) {
+            document.getElementById('lastUpdate').textContent = 'Act.: ' + (data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : '---');
+            document.getElementById('responsableName').textContent = data.responsable || 'Desconocido';
+
+            const container = document.getElementById('mainContainer');
+
+            // Organize data into categories manually for better layout
+            // Mapping assumes the order from backend.gs labels
+            const raw = data.data || [];
+
+            // Helper to find value by partial label match safely
+            const findVal = (key) => {
+                const item = raw.find(r => r[0].includes(key));
+                return item ? item[1] : '-';
+            };
+
+            // CATEGORIES DEFINITION
+            const categories = [
+                {
+                    title: "Compresores Oxígeno",
+                    icon: "bi-wind",
+                    items: [
+                        { label: "O2 KW", val: findVal("O2 Comp KW") },
+                        { label: "O2 M3", val: findVal("O2 Comp M3") },
+                        { label: "Hrs Oper.", val: findVal("O2 Comp HRS") }
+                    ]
+                },
+                {
+                    title: "Generadores Oxígeno",
+                    icon: "bi-lightning-charge",
+                    items: [
+                        { label: "Gen1 Hrs", val: findVal("O2 Gen1 HRS") },
+                        { label: "Gen1 M3", val: findVal("O2 Gen1 M3") },
+                        { label: "Gen2 Hrs", val: findVal("O2 Gen2 HRS") },
+                        { label: "Gen2 M3", val: findVal("O2 Gen2 M3") }
+                    ]
+                },
+                {
+                    title: "Consumo Biomasa",
+                    icon: "bi-fish",
+                    items: [
+                        { label: "Fry", val: findVal("O2 Cons Fry") },
+                        { label: "Smolt", val: findVal("O2 Cons Smolt") }
+                    ]
+                },
+                {
+                    title: "Red Eléctrica (V)",
+                    icon: "bi-plug",
+                    items: [
+                        { label: "V12", val: findVal("Red V12") },
+                        { label: "V23", val: findVal("Red V23") },
+                        { label: "V31", val: findVal("Red V31") }
+                    ]
+                },
+                {
+                    title: "Red Eléctrica (I)",
+                    icon: "bi-activity",
+                    items: [
+                        { label: "I1", val: findVal("Red I1") },
+                        { label: "I2", val: findVal("Red I2") },
+                        { label: "I3", val: findVal("Red I3") },
+                        { label: "IN", val: findVal("Red IN") }
+                    ]
+                },
+                {
+                    title: "Potencia Total",
+                    icon: "bi-battery-charging",
+                    items: [
+                        { label: "Sump KW", val: findVal("Red SumP KW") },
+                        { label: "EA GW", val: findVal("Red EA GW") }
+                    ]
+                },
+                {
+                    title: "Diesel Generador 1",
+                    icon: "bi-fuel-pump",
+                    items: [
+                        { label: "Hrs", val: findVal("D Gen1 HRS") },
+                        { label: "KW", val: findVal("D Gen1 KW") },
+                        { label: "Lts", val: findVal("D Gen1 Lts") }
+                    ]
+                },
+                {
+                    title: "Diesel Generador 2",
+                    icon: "bi-fuel-pump",
+                    items: [
+                        { label: "Hrs", val: findVal("D Gen2 HRS") },
+                        { label: "KW", val: findVal("D Gen2 KW") },
+                        { label: "Lts", val: findVal("D Gen2 Lts") }
+                    ]
+                },
+                {
+                    title: "Diesel Generador 3",
+                    icon: "bi-fuel-pump",
+                    items: [
+                        { label: "Hrs", val: findVal("D Gen3 HRS") },
+                        { label: "KW", val: findVal("D Gen3 KW") },
+                        { label: "Lts", val: findVal("D Gen3 Lts") }
+                    ]
+                }
+            ];
+
+            // Build HTML
+            let html = '<div class="row g-4">';
+
+            categories.forEach(cat => {
+                html += `
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="section-title"><i class="bi ${cat.icon} me-2"></i> ${cat.title}</div>
+                    <div class="row g-3">`;
+
+                cat.items.forEach(item => {
+                    html += `
+                        <div class="col-6">
+                            <div class="data-card text-center">
+                                <div class="card-label">${item.label}</div>
+                                <div class="card-value">${item.val}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Init
+        fetchData();
+        setInterval(fetchData, REFRESH_INTERVAL);
+
+    </script>
+</body>
+
+</html>

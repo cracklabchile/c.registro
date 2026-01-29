@@ -1,0 +1,301 @@
+/* Premium Minimalist Design v5.0 */
+:root {
+    --primary: #004B8D;
+    --primary-dark: #003666;
+    --accent: #00A9E0;
+    /* Cermaq Cyan-Blue */
+    --success: #10b981;
+    --danger: #ef4444;
+
+    /* Modern Background */
+    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+
+    /* Glassmorphism Variables */
+    --surface: rgba(255, 255, 255, 0.9);
+    --glass: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.6);
+
+    --text: #1e293b;
+    --text-light: #64748b;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+
+    --radius: 24px;
+    /* More rounded */
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text);
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.main-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    padding-bottom: 80px;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-down {
+    animation: fadeInDown 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+
+/* --- HEADER (Reference Style) --- */
+.app-header {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    margin-bottom: 24px !important;
+    transition: all 0.3s ease;
+}
+
+.nav-logo {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 6px;
+}
+
+/* Status Pill */
+.status-pill {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 20px;
+    font-weight: 600;
+    color: var(--text-light);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.status-indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #cbd5e1;
+    /* Check/Loading */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* States */
+.status-pill.online .status-indicator-dot {
+    background-color: var(--success);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.status-pill.offline .status-indicator-dot {
+    background-color: var(--danger);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+/* --- CARDS (Glass Minimalist) --- */
+.glass-card {
+    background: var(--surface);
+    border: 1px solid white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-header-custom {
+    padding: 18px 24px;
+    background: linear-gradient(to right, rgba(248, 250, 252, 0.8), rgba(255, 255, 255, 0));
+    border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+/* --- MINIMALIST INPUTS (iOS 17 Style) --- */
+.form-floating>.form-control {
+    background: #f1f5f9;
+    border: 1px solid transparent;
+    /* Hidden border by default */
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
+    height: calc(3.5rem + 2px);
+    box-shadow: none !important;
+    transition: all 0.2s ease;
+}
+
+.form-floating>.form-control:focus {
+    background: #ffffff;
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1) !important;
+}
+
+.form-floating>label {
+    padding-left: 1rem;
+    color: #94a3b8;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.form-floating>.form-control:focus~label,
+.form-floating>.form-control:not(:placeholder-shown)~label {
+    color: var(--accent);
+    font-weight: 600;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    opacity: 1;
+}
+
+/* --- GENERATOR BLOCKS --- */
+.generator-block {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    margin-bottom: 20px;
+}
+
+.gen-title {
+    font-size: 0.85rem;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.gen-title::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent);
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.section-subtitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #94a3b8;
+    font-weight: 800;
+    margin: 20px 0 12px 0;
+    display: block;
+}
+
+/* --- BUTTONS --- */
+.custom-btn {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.4);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.custom-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px -5px rgba(2, 132, 199, 0.5);
+    background: linear-gradient(135deg, #023e7d, #0096c7);
+}
+
+.custom-btn:active {
+    transform: scale(0.98);
+}
+
+/* --- MODAL --- */
+.glass-modal {
+    background: #ffffff;
+    border-radius: 24px;
+    border: none;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+/* Admin Trigger */
+.admin-trigger {
+    font-size: 1.5rem;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.admin-trigger:hover {
+    color: var(--text-light);
+}
