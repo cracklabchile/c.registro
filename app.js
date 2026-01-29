@@ -38,7 +38,29 @@ const fieldIds = [
 
 window.onload = () => {
     checkLastSubmission();
+    setupNetworkListener();
 };
+
+function setupNetworkListener() {
+    const statusEl = document.getElementById('networkStatus');
+
+    function updateStatus() {
+        if (!statusEl) return;
+        if (navigator.onLine) {
+            statusEl.textContent = "Online";
+            statusEl.className = "network-status status-online";
+            setTimeout(() => { statusEl.style.opacity = '0'; }, 2000);
+        } else {
+            statusEl.textContent = "Sin Conexión";
+            statusEl.className = "network-status status-offline";
+            statusEl.style.opacity = '1';
+        }
+    }
+
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus();
+}
 
 function checkLastSubmission() {
     const lastSub = localStorage.getItem('lastSubmission');
@@ -47,7 +69,7 @@ function checkLastSubmission() {
         const now = new Date();
         const diffHours = (now - date) / 1000 / 60 / 60;
         if (diffHours < 4 && appMode !== 'ADMIN') {
-            // Optional: Logic to warn if submitting too frequently
+            // Optional warning logic
         }
     }
 }
@@ -86,6 +108,11 @@ function handleSubmit(event) {
 }
 
 function sendData() {
+    if (!navigator.onLine) {
+        alert("Estás offline. Conéctate a internet para enviar los datos.");
+        return;
+    }
+
     btnFinalSend.disabled = true;
     btnFinalSend.innerText = "Enviando...";
 
@@ -106,21 +133,23 @@ function sendData() {
 
     console.log("Payload:", payload);
 
+    // Use text/plain to avoid CORS Preflight checks which often fail with GAS Web Apps
     fetch(API_URL, {
         method: "POST",
         mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(payload)
     })
         .then(() => {
-            alert("Datos guardados exitosamente.");
+            // With no-cors we can't be 100% sure of server success, but if no network error, assume sent.
+            alert("Datos enviados con éxito. Verifica la planilla.");
             finishSubmission();
         })
         .catch(err => {
-            console.error(err);
-            alert("Error al enviar datos. Intente nuevamente.");
+            console.error("Fetch Error:", err);
+            alert("Error de conexión. Intenta nuevamente.");
             btnFinalSend.disabled = false;
-            btnFinalSend.innerText = "Enviar Registro";
+            btnFinalSend.innerText = "Enviar Definitivo";
         });
 }
 
@@ -129,7 +158,7 @@ function finishSubmission() {
     localStorage.setItem('lastSubmission', Date.now().toString());
     form.reset();
     btnFinalSend.disabled = false;
-    btnFinalSend.innerText = "Enviar Registro";
+    btnFinalSend.innerText = "Confirmar y Enviar";
 
     if (appMode !== 'ADMIN') {
         document.body.innerHTML = `
