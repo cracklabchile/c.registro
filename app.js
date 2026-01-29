@@ -46,6 +46,12 @@ const fieldIds = [
 window.onload = () => {
     checkLastSubmission();
     setupNetworkListener();
+
+    // Load cached Responsable
+    const savedName = localStorage.getItem('savedResponsable');
+    if (savedName) {
+        document.getElementById('responsable').value = savedName;
+    }
 };
 
 function setupNetworkListener() {
@@ -90,6 +96,9 @@ function handleSubmit(event) {
         alert("El nombre del Responsable es obligatorio.");
         return;
     }
+
+    // Save for next time
+    localStorage.setItem('savedResponsable', responsable);
 
     let summaryHtml = `<p><strong>Responsable:</strong> ${responsable}</p><hr>`;
     summaryHtml += '<div class="row">';

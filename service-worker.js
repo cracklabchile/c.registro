@@ -1,4 +1,4 @@
-const CACHE_NAME = 'planta-v4-force'; // Bumped to v4 to be sure
+const CACHE_NAME = 'planta-v5'; // Bumped to v4 to be sure
 const ASSETS = [
     './',
     './index.html?v=4',

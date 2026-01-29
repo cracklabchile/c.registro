@@ -62,14 +62,51 @@ body {
 }
 
 /* Header */
+/* Header (Sticky & Transparent) */
 .app-header {
-    background: transparent;
+    background: rgba(248, 250, 252, 0.85);
+    /* Semitransparent */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px !important;
 }
 
 .app-title {
     color: var(--primary-color);
     font-weight: 700;
+}
+
+/* Network Status Badge */
+.network-status {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1001;
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    transition: all 0.3s;
+    opacity: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.status-offline {
+    background-color: #ef4444;
+    color: white;
+    opacity: 1 !important;
+}
+
+.status-online {
+    background-color: #22c55e;
+    color: white;
+    opacity: 1;
+    /* Temporarily visible */
 }
 
 /* Cards (Light Mode) */

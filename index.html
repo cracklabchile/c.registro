@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -26,11 +26,13 @@
 
 <body>
 
+    <!-- Network Status Badge -->
+    <div id="networkStatus" class="network-status">Checking...</div>
+
     <div class="main-container">
         <!-- Header -->
         <header class="app-header text-center mb-4 fade-in-down">
-            <img src="Cermaq_logo2.png" alt="Cermaq Logo" class="img-fluid mb-2"
-                style="max-height: 80px; opacity: 0.9;">
+            <img src="Cermaq_logo2.png" alt="Cermaq Logo" class="img-fluid mb-2" style="max-height: 45px; opacity: 1;">
             <p class="text-muted small fw-bold">CONTROL DE OXÍGENO Y ENERGÍA</p>
         </header>
 
@@ -44,15 +46,8 @@
                 <div class="card-body">
                     <div class="form-floating mb-1">
                         <input type="text" class="form-control custom-input" id="responsable"
-                            placeholder="Nombre Apellido" required list="responsables-list">
+                            placeholder="Nombre Apellido" required>
                         <label for="responsable">Responsable del Turno (Nombre)</label>
-                        <!-- Optional Datalist for convenience but allows free text -->
-                        <datalist id="responsables-list">
-                            <option value="Operador Turno A">
-                            <option value="Operador Turno B">
-                            <option value="Operador Turno C">
-                            <option value="Jefe Planta">
-                        </datalist>
                     </div>
                 </div>
             </div>
@@ -298,7 +293,7 @@
         <!-- Admin Trigger -->
         <div class="text-center pb-4">
             <i class="bi bi-gear-fill admin-trigger" onclick="toggleAdmin()"></i>
-            <p class="text-muted small mt-2" style="font-size: 0.7rem;">v4.0 (Latest)</p>
+            <p class="text-muted small mt-2" style="font-size: 0.7rem;">v5.0 (Latest)</p>
         </div>
 
     </div>
@@ -325,7 +320,7 @@
 
     <!-- Admin Logic -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
 
     <script>
         if ('serviceWorker' in navigator) {
