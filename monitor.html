@@ -152,6 +152,20 @@
             }
         }
 
+        .filter-white {
+            filter: brightness(0) invert(1);
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .letter-spacing-2 {
+            letter-spacing: 2px;
+        }
+
         .empty-state {
             min-height: 60vh;
             display: flex;
@@ -171,24 +185,28 @@
     <header class="glass-header py-3 mb-4">
         <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-                <i class="bi bi-grid-1x2-fill text-primary fs-4"></i>
-                <h1 class="h4 m-0 fw-bold">Monitor F1 <span class="fw-light opacity-75">| Energía & O2</span></h1>
+                <img src="Cermaq_logo2.png" alt="Cermaq" height="45" class="d-inline-block align-text-top filter-white">
+                <div class="border-start border-secondary ps-3 ms-2">
+                    <h1 class="h4 m-0 fw-bold text-gradient">MONITOR F1</h1>
+                    <small class="text-secondary text-uppercase letter-spacing-2">Sistema O2 y Energía</small>
+                </div>
             </div>
-            <div class="text-end d-none d-md-block">
-                <div id="lastUpdate" class="text-muted small">Esperando datos...</div>
-                <div id="responsableName" class="fw-bold text-accent">---</div>
-            </div>
-            <!-- Manual Refresh Button -->
-            <button onclick="fetchData()" id="btnRefresh"
-                class="btn btn-outline-primary btn-sm rounded-pill px-3 d-flex align-items-center gap-2">
-                <i class="bi bi-arrow-clockwise"></i> <span class="d-none d-sm-inline">Actualizar</span>
-            </button>
+            <div class="d-flex align-items-center gap-4">
+                <div class="text-end d-none d-md-block">
+                    <div id="lastUpdate" class="text-muted small">Última sincro: --:--</div>
+                    <div id="responsableName" class="fw-bold text-accent">---</div>
+                </div>
+                <!-- Manual Refresh Button -->
+                <button onclick="fetchData()" id="btnRefresh"
+                    class="btn btn-outline-light btn-sm rounded-pill px-3 d-flex align-items-center gap-2 border-opacity-25">
+                    <i class="bi bi-arrow-clockwise"></i> <span class="d-none d-sm-inline">Actualizar</span>
+                </button>
 
-            <div class="status-badge" id="statusBadge">
-                <div class="status-dot"></div>
-                <span id="statusText">CONECTADO</span>
+                <div class="status-badge" id="statusBadge">
+                    <div class="status-dot"></div>
+                    <span id="statusText">CONECTADO</span>
+                </div>
             </div>
-        </div>
         </div>
     </header>
 
@@ -196,7 +214,7 @@
         <!-- Content injected via JS -->
         <div class="empty-state">
             <div class="spinner-border text-primary mb-3" role="status"></div>
-            <p>Cargando datos desde el servidor...</p>
+            <p>Conectando con Servidor Central...</p>
         </div>
     </div>
 
@@ -260,13 +278,13 @@
 
             if (isOnline) {
                 badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-                badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                badge.style.background = 'rgba(16, 185, 129, 0.1)';
                 badge.style.color = '#34d399';
                 dot.style.backgroundColor = '#34d399';
-                text.textContent = "CONECTADO";
+                text.textContent = "ONLINE";
             } else {
                 badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-                badge.style.background = 'rgba(239, 68, 68, 0.2)';
+                badge.style.background = 'rgba(239, 68, 68, 0.1)';
                 badge.style.color = '#ef4444';
                 dot.style.backgroundColor = '#ef4444';
                 text.textContent = "OFFLINE";
@@ -274,102 +292,108 @@
         }
 
         function renderDashboard(data) {
-            document.getElementById('lastUpdate').textContent = 'Act.: ' + (data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : '---');
-            document.getElementById('responsableName').textContent = data.responsable || 'Desconocido';
+            document.getElementById('lastUpdate').textContent = data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : '--:--';
+            document.getElementById('responsableName').textContent = data.responsable || '---';
 
             const container = document.getElementById('mainContainer');
 
-            // Organize data into categories manually for better layout
-            // Mapping assumes the order from backend.gs labels
             const raw = data.data || [];
 
-            // Helper to find value by partial label match safely
             const findVal = (key) => {
                 const item = raw.find(r => r[0].includes(key));
+                // Add units logic if needed, currently assumes value includes it or is just number
                 return item ? item[1] : '-';
             };
 
-            // CATEGORIES DEFINITION
-            const categories = [
+            // REORGANIZED CATEGORIES
+            const groups = [
                 {
-                    title: "Compresores Oxígeno",
-                    icon: "bi-wind",
-                    items: [
-                        { label: "O2 KW", val: findVal("O2 Comp KW") },
-                        { label: "O2 M3", val: findVal("O2 Comp M3") },
-                        { label: "Hrs Oper.", val: findVal("O2 Comp HRS") }
+                    mainTitle: "SISTEMA DE OXÍGENO",
+                    mainIcon: "bi-wind",
+                    subSections: [
+                        {
+                            title: "Producción & Equipos",
+                            items: [
+                                { label: "Compresor O2", val: findVal("O2 Comp KW"), unit: "KW" },
+                                { label: "Flujo Comp.", val: findVal("O2 Comp M3"), unit: "m³" },
+                                { label: "Gen 1", val: findVal("O2 Gen1 M3"), unit: "m³" },
+                                { label: "Gen 2", val: findVal("O2 Gen2 M3"), unit: "m³" }
+                            ]
+                        },
+                        {
+                            title: "Horas Operación",
+                            items: [
+                                { label: "Gen 1", val: findVal("O2 Gen1 HRS"), unit: "Hrs" },
+                                { label: "Gen 2", val: findVal("O2 Gen2 HRS"), unit: "Hrs" },
+                                { label: "Compresor", val: findVal("O2 Comp HRS"), unit: "Hrs" }
+                            ]
+                        },
+                        {
+                            title: "Consumo Biomasa",
+                            items: [
+                                { label: "Fry", val: findVal("O2 Cons Fry"), unit: "" },
+                                { label: "Smolt", val: findVal("O2 Cons Smolt"), unit: "" }
+                            ]
+                        }
                     ]
                 },
                 {
-                    title: "Generadores Oxígeno",
-                    icon: "bi-lightning-charge",
-                    items: [
-                        { label: "Gen1 Hrs", val: findVal("O2 Gen1 HRS") },
-                        { label: "Gen1 M3", val: findVal("O2 Gen1 M3") },
-                        { label: "Gen2 Hrs", val: findVal("O2 Gen2 HRS") },
-                        { label: "Gen2 M3", val: findVal("O2 Gen2 M3") }
+                    mainTitle: "RED ELÉCTRICA (Suministro)",
+                    mainIcon: "bi-lightning-charge-fill",
+                    subSections: [
+                        {
+                            title: "Voltajes (V)",
+                            items: [
+                                { label: "L1 - L2", val: findVal("Red V12"), unit: "V" },
+                                { label: "L2 - L3", val: findVal("Red V23"), unit: "V" },
+                                { label: "L3 - L1", val: findVal("Red V31"), unit: "V" }
+                            ]
+                        },
+                        {
+                            title: "Corrientes (A)",
+                            items: [
+                                { label: "L1", val: findVal("Red I1"), unit: "A" },
+                                { label: "L2", val: findVal("Red I2"), unit: "A" },
+                                { label: "L3", val: findVal("Red I3"), unit: "A" }
+                            ]
+                        },
+                        {
+                            title: "Potencia",
+                            items: [
+                                { label: "Total Sump", val: findVal("Red SumP KW"), unit: "KW" },
+                                { label: "Total EA", val: findVal("Red EA GW"), unit: "GW" }
+                            ]
+                        }
                     ]
                 },
                 {
-                    title: "Consumo Biomasa",
-                    icon: "bi-fish",
-                    items: [
-                        { label: "Fry", val: findVal("O2 Cons Fry") },
-                        { label: "Smolt", val: findVal("O2 Cons Smolt") }
-                    ]
-                },
-                {
-                    title: "Red Eléctrica (V)",
-                    icon: "bi-plug",
-                    items: [
-                        { label: "V12", val: findVal("Red V12") },
-                        { label: "V23", val: findVal("Red V23") },
-                        { label: "V31", val: findVal("Red V31") }
-                    ]
-                },
-                {
-                    title: "Red Eléctrica (I)",
-                    icon: "bi-activity",
-                    items: [
-                        { label: "I1", val: findVal("Red I1") },
-                        { label: "I2", val: findVal("Red I2") },
-                        { label: "I3", val: findVal("Red I3") },
-                        { label: "IN", val: findVal("Red IN") }
-                    ]
-                },
-                {
-                    title: "Potencia Total",
-                    icon: "bi-battery-charging",
-                    items: [
-                        { label: "Sump KW", val: findVal("Red SumP KW") },
-                        { label: "EA GW", val: findVal("Red EA GW") }
-                    ]
-                },
-                {
-                    title: "Diesel Generador 1",
-                    icon: "bi-fuel-pump",
-                    items: [
-                        { label: "Hrs", val: findVal("D Gen1 HRS") },
-                        { label: "KW", val: findVal("D Gen1 KW") },
-                        { label: "Lts", val: findVal("D Gen1 Lts") }
-                    ]
-                },
-                {
-                    title: "Diesel Generador 2",
-                    icon: "bi-fuel-pump",
-                    items: [
-                        { label: "Hrs", val: findVal("D Gen2 HRS") },
-                        { label: "KW", val: findVal("D Gen2 KW") },
-                        { label: "Lts", val: findVal("D Gen2 Lts") }
-                    ]
-                },
-                {
-                    title: "Diesel Generador 3",
-                    icon: "bi-fuel-pump",
-                    items: [
-                        { label: "Hrs", val: findVal("D Gen3 HRS") },
-                        { label: "KW", val: findVal("D Gen3 KW") },
-                        { label: "Lts", val: findVal("D Gen3 Lts") }
+                    mainTitle: "RESPALDO DIÉSEL",
+                    mainIcon: "bi-fuel-pump-diesel",
+                    subSections: [
+                        {
+                            title: "Generador 1",
+                            items: [
+                                { label: "Potencia", val: findVal("D Gen1 KW"), unit: "KW" },
+                                { label: "Nivel", val: findVal("D Gen1 Lts"), unit: "Lts" },
+                                { label: "Horómetro", val: findVal("D Gen1 HRS"), unit: "Hrs" }
+                            ]
+                        },
+                        {
+                            title: "Generador 2",
+                            items: [
+                                { label: "Potencia", val: findVal("D Gen2 KW"), unit: "KW" },
+                                { label: "Nivel", val: findVal("D Gen2 Lts"), unit: "Lts" },
+                                { label: "Horómetro", val: findVal("D Gen2 HRS"), unit: "Hrs" }
+                            ]
+                        },
+                        {
+                            title: "Generador 3",
+                            items: [
+                                { label: "Potencia", val: findVal("D Gen3 KW"), unit: "KW" },
+                                { label: "Nivel", val: findVal("D Gen3 Lts"), unit: "Lts" },
+                                { label: "Horómetro", val: findVal("D Gen3 HRS"), unit: "Hrs" }
+                            ]
+                        }
                     ]
                 }
             ];
@@ -377,24 +401,37 @@
             // Build HTML
             let html = '<div class="row g-4">';
 
-            categories.forEach(cat => {
+            groups.forEach(group => {
                 html += `
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="section-title"><i class="bi ${cat.icon} me-2"></i> ${cat.title}</div>
-                    <div class="row g-3">`;
-
-                cat.items.forEach(item => {
-                    html += `
-                        <div class="col-6">
-                            <div class="data-card text-center">
-                                <div class="card-label">${item.label}</div>
-                                <div class="card-value">${item.val}</div>
-                            </div>
+                <div class="col-12">
+                    <div class="card bg-dark bg-opacity-25 border-secondary border-opacity-25 mb-2">
+                        <div class="card-header border-bottom border-secondary border-opacity-25 bg-transparent py-3">
+                             <h5 class="m-0 text-accent fw-bold"><i class="bi ${group.mainIcon} me-2"></i> ${group.mainTitle}</h5>
                         </div>
-                    `;
+                        <div class="card-body">
+                            <div class="row g-4">`;
+
+                group.subSections.forEach(sub => {
+                    html += `
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <h6 class="text-secondary text-uppercase small letter-spacing-2 mb-3 border-bottom border-secondary border-opacity-10 pb-2">${sub.title}</h6>
+                            <div class="row g-2">`;
+
+                    sub.items.forEach(item => {
+                        html += `
+                            <div class="col-6">
+                                <div class="data-card p-2 p-xl-3 text-center position-relative overflow-hidden">
+                                    <div class="card-label small mb-1 opacity-75">${item.label}</div>
+                                    <div class="card-value fs-4">${item.val}</div>
+                                    ${item.unit ? `<div class="small text-muted opacity-50" style="font-size:0.7rem">${item.unit}</div>` : ''}
+                                </div>
+                            </div>`;
+                    });
+
+                    html += `</div></div>`; // End Subsection col
                 });
 
-                html += `</div></div>`;
+                html += `</div></div></div></div>`; // End Main Card & Row Col
             });
 
             html += '</div>';
